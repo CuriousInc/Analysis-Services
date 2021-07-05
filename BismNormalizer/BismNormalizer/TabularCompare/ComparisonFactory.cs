@@ -63,8 +63,6 @@ namespace BismNormalizer.TabularCompare
 
         private static Comparison CreateComparisonInitialized(ComparisonInfo comparisonInfo)
         {
-            Telemetry.TrackEvent("CreateComparisonInitialized", new Dictionary<string, string> { { "App", comparisonInfo.AppName.Replace(" ", "") } });
-
             //If composite models not allowed on AS, check DQ/Import at model level matches:
             if (comparisonInfo.AppName == "BISM Normalizer" && comparisonInfo.ConnectionInfoTarget.ServerName != null && !comparisonInfo.ConnectionInfoTarget.ServerName.StartsWith("powerbi://") && !Settings.Default.OptionCompositeModelsOverride && comparisonInfo.SourceDirectQuery != comparisonInfo.TargetDirectQuery)
             {

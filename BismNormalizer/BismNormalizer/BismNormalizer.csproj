@@ -239,7 +239,6 @@
     <Compile Include="TabularCompare\TabularMetadata\ExpressionCollection.cs" />
     <Compile Include="TabularCompare\TabularMetadata\CalcDependency.cs" />
     <Compile Include="TabularCompare\TabularMetadata\CalcDependencyCollection.cs" />
-    <Compile Include="TabularCompare\Telemetry.cs" />
     <Compile Include="TabularCompare\UI\ComparisonControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -48,7 +48,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             if (recursionCounter >= RecursionCounterMax)
             {
                 Exception infRecursion = new CalcDependenciesInfiniteRecursionException($"Calc dependencies infinite recursion detected for type \"{objectType}\", table \"{tableName}\", name \"{objectName}\".");
-                Telemetry.TrackException(infRecursion);
                 throw infRecursion;
             }
 
