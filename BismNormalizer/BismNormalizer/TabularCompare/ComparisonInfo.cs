@@ -1,8 +1,5 @@
-﻿using EnvDTE;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace BismNormalizer.TabularCompare
@@ -272,30 +269,6 @@ namespace BismNormalizer.TabularCompare
             PopulateDatabaseProperties();
         }
 
-        /// <summary>
-        /// Finds model compatibility levels (and preps databases on workspace servers for comparison). This overload to be used when running in Visual Studio. Allows user to cancel if doesn't want to close .bim file(s).
-        /// </summary>
-        /// <param name="compatibilityLevelSource"></param>
-        /// <param name="compatibilityLevelTarget"></param>
-        /// <param name="userCancelled"></param>
-        public void InitializeCompatibilityLevels(out bool userCancelled)
-        {
-            //Check if any open bim files that need to be closed
-            bool closedSourceBimFile;
-            bool closedTargetBimFile;
-            CloseProjectBimFiles(out closedSourceBimFile, out closedTargetBimFile, out userCancelled);
-            if (userCancelled)
-            {
-                return;
-            }
-
-            //Passing closedSourceBimFile so doesn't run bim file script if user just closed it (more efficient)
-            ConnectionInfoSource.InitializeCompatibilityLevel(closedSourceBimFile);
-            ConnectionInfoTarget.InitializeCompatibilityLevel(closedTargetBimFile);
-
-            PopulateDatabaseProperties();
-        }
-
         private void PopulateDatabaseProperties()
         {
             _sourceCompatibilityLevel = ConnectionInfoSource.CompatibilityLevel;
@@ -306,71 +279,6 @@ namespace BismNormalizer.TabularCompare
 
             _sourceDirectQuery = ConnectionInfoSource.DirectQuery;
             _targetDirectQuery = ConnectionInfoTarget.DirectQuery;
-        }
-
-        private void CloseProjectBimFiles(out bool closeSourceBimFile, out bool closeTargetBimFile, out bool userCancelled)
-        {
-            closeSourceBimFile = false;
-            closeTargetBimFile = false;
-            userCancelled = false;
-            List<ProjectItem> projectItemsToClose = new List<ProjectItem>();
-
-            if (ConnectionInfoSource.UseProject)
-            {
-                foreach (ProjectItem sourceProjectItem in ConnectionInfoSource.Project.ProjectItems)
-                {
-                    if (sourceProjectItem.Name.EndsWith(".bim") && sourceProjectItem.IsOpen)
-                    {
-                        projectItemsToClose.Add(sourceProjectItem);
-                        closeSourceBimFile = true;
-                        break;
-                    }
-                }
-            }
-
-            if (ConnectionInfoTarget.UseProject)
-            {
-                foreach (ProjectItem targetProjectItem in ConnectionInfoTarget.Project.ProjectItems)
-                {
-                    if (targetProjectItem.Name.EndsWith(".bim") && targetProjectItem.IsOpen)
-                    {
-                        // check if user has source/target as the same project
-                        if (!(projectItemsToClose.Count == 1 && projectItemsToClose[0].Document.FullName == targetProjectItem.Document.FullName))
-                        {
-                            projectItemsToClose.Add(targetProjectItem);
-                            closeTargetBimFile = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (projectItemsToClose.Count > 0)
-            {
-                string filesToClose = "";
-                foreach (ProjectItem projectItemToClose in projectItemsToClose)
-                {
-                    filesToClose += $"\n- {projectItemToClose.ContainingProject.Name.Replace(".smproj", "")}\\{projectItemToClose.Name}";
-                }
-
-                if (MessageBox.Show($"{_appName} needs to close the following file(s) that are\nopen in Visual Studio.  Do you want to continue?{filesToClose}", _appName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                {
-                    userCancelled = true;
-                }
-                else
-                {
-                    foreach (ProjectItem projectItemToClose in projectItemsToClose)
-                    {
-                        if (projectItemToClose.Document.Saved)
-                        {
-                            projectItemToClose.Document.Close(vsSaveChanges.vsSaveChangesNo);
-                        }
-                        else
-                        {
-                            projectItemToClose.Document.Close(vsSaveChanges.vsSaveChangesYes);
-                        }
-                    }
-                }
-            }
         }
     }
 }

@@ -19,27 +19,6 @@ namespace BismNormalizer.TabularCompare
         private static List<string> _supportedDataSourceVersions = new List<string> { "PowerBI_V3" };
 
         /// <summary>
-        /// Uses factory design pattern to return an object of type Core.Comparison, which is instantiated using MultidimensionalMetadata.Comparison or TabularMeatadata.Comparison depending on SSAS compatibility level. Use this overload when running in Visual Studio.
-        /// </summary>
-        /// <param name="comparisonInfo">ComparisonInfo object for the comparison.</param>
-        /// <param name="userCancelled">If use decides not to close .bim file(s) in Visual Studio, returns true.</param>
-        /// <returns>Core.Comparison object</returns>
-        public static Comparison CreateComparison(ComparisonInfo comparisonInfo, out bool userCancelled)
-        {
-            //This overload is for running in Visual Studio, so can set PromptForDatabaseProcessing = true
-            comparisonInfo.PromptForDatabaseProcessing = true;
-
-            // Need to ensure compatibility levels get initialized here (instead of comparisonInfo initialization properties). This also serves to prep databases on workspace server while finding compatibility levels
-            comparisonInfo.InitializeCompatibilityLevels(out userCancelled);
-            if (userCancelled)
-            {
-                return null;
-            }
-
-            return CreateComparisonInitialized(comparisonInfo);
-        }
-
-        /// <summary>
         /// Uses factory design pattern to return an object of type Core.Comparison, which is instantiated using MultidimensionalMetadata.Comparison or TabularMeatadata.Comparison depending on SSAS compatibility level.
         /// </summary>
         /// <param name="bsmnFile">Full path to the BSMN file.</param>
