@@ -25,7 +25,7 @@ namespace BismNormalizer.TabularCompare
         private bool _targetDirectQuery;
         private bool _promptForDatabaseProcessing;
         private bool _interactive = true;
-        private string _appName = Utils.AssemblyProduct;
+        private string _appName = "BISMNormalizer";
         private bool _credsProvided = false;
         private string _sourceUsername;
         private string _sourcePassword;
