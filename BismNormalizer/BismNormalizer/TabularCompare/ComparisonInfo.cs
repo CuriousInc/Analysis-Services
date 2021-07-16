@@ -1,5 +1,4 @@
-﻿using BismNormalizer.TabularCompare.UI;
-using EnvDTE;
+﻿using EnvDTE;
 using System;
 using System.Collections.Generic;
 using System.IO;
